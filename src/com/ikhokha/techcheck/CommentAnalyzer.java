@@ -6,7 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CommentAnalyzer {
 	
@@ -30,15 +34,26 @@ public class CommentAnalyzer {
 					incOccurrence(resultsMap, "SHORTER_THAN_15");
 
 				} else if (line.contains("Mover")) {
+					
 
 					incOccurrence(resultsMap, "MOVER_MENTIONS");
-				
 				} else if (line.contains("Shaker")) {
 
 					incOccurrence(resultsMap, "SHAKER_MENTIONS");
 				
+				}else if(line.contains("?")) {
+					
+					incOccurrence(resultsMap, "QUESTION");
+				}
+				
+				var RegularExp = Pattern.compile("https?://(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)", Pattern.CASE_INSENSITIVE);
+				
+				else if(line.contains(RegularExp.matcher(line).find())){
+					
+					incOccurrence(resultsMap, "SPAM")
 				}
 			}
+
 			
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found: " + file.getAbsolutePath());
